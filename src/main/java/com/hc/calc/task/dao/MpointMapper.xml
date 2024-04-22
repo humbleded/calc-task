@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.calc.task.dao.MpointMapper">
+    <resultMap id="BaseResultMap" type="com.hc.calc.task.model.Mpoint">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="mpoint_type" property="mpointType" jdbcType="VARCHAR"/>
+        <result column="site_id" property="siteId" jdbcType="BIGINT"/>
+        <result column="mpoint_id" property="mpointId" jdbcType="VARCHAR"/>
+        <result column="mpoint_name" property="mpointName" jdbcType="VARCHAR"/>
+        <result column="category_id" property="categoryId" jdbcType="BIGINT"/>
+        <result column="datasource" property="datasource" jdbcType="VARCHAR"/>
+        <result column="datype" property="datype" jdbcType="VARCHAR"/>
+        <result column="unit" property="unit" jdbcType="VARCHAR"/>
+        <result column="numtail" property="numtail" jdbcType="BIGINT"/>
+        <result column="enumvalue" property="enumvalue" jdbcType="VARCHAR"/>
+        <result column="upper_range" property="upperRange" jdbcType="DECIMAL"/>
+        <result column="lower_range" property="lowerRange" jdbcType="DECIMAL"/>
+        <result column="slope" property="slope" jdbcType="VARCHAR"/>
+        <result column="increase" property="increase" jdbcType="VARCHAR"/>
+        <result column="coefficient" property="coefficient" jdbcType="VARCHAR"/>
+        <result column="cardinality" property="cardinality" jdbcType="DECIMAL"/>
+        <result column="magnification" property="magnification"
+                jdbcType="DECIMAL"/>
+        <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+        <result column="point" property="point" jdbcType="VARCHAR"/>
+        <result column="equipment" property="equipment"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="create_userid" property="createUserid"
+                jdbcType="BIGINT"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="update_userid" property="updateUserid"
+                jdbcType="BIGINT"/>
+        <result column="delete_flag" property="deleteFlag" jdbcType="BIT"/>
+        <result column="category_name" property="categoryName"
+                jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getMpointByIds" resultType="com.hc.calc.task.model.Mpoint">
+        select
+        id,mpoint_type as mpointType, site_id as siteId, mpoint_id as mpointId, mpoint_name as mpointName,
+        category_id as categoryId,datasource, datype,unit, numtail, enumvalue,
+        upper_range as upperRange, lower_range as lowerRange,(select category_name
+        from t_data_category s where s.id=category_id) as categoryName,
+        slope,increase,coefficient, cardinality, magnification,
+        remarks,create_time as createTime,create_userid as createUserid,
+        update_time as updateTime, update_userid as updateUserid, delete_flag as deleteFlag,
+        point,equipment,tenant_id as tenantId,read_write_set as readWriteSet,role_id as roleId,
+        push_set as pushSet,dead_zone as deadZone,cycle,curve_yaxis_lower_range as
+        curveYaxisLowerRange,curve_yaxis_upper_range as curveYaxisUpperRange
+        from t_mpoint t
+        where id in
+        <foreach collection="ids" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id,jdbcType=VARCHAR}
+        </foreach>
+        and delete_flag = 0
+    </select>
+
+
+</mapper>

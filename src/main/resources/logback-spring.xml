@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 日志最大的历史 30天 -->
+    <property name="maxHistory" value="30"/>
+    <property name="SYS_LOG_DIR" value="log"/>
+    <property name="fileLayoutPattern"
+              value="%-20(%d{yyyyMMdd_HH:mm:ss.SSS} [%logger{10}][%thread] [%-4relative])  
+                [%X{hostName} %X{requestId} %X{processId} %X{service.timing} ][%level] %msg%n"/>
+    <property name="LOG_HOME" value="./logs"/>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <!--<appender name="log_info"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${SYS_LOG_DIR}/info/info.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${SYS_LOG_DIR}/info/%d{yyyy-MM-dd}/info_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <layout>
+            <pattern>${fileLayoutPattern}</pattern>
+        </layout>
+    </appender>
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>192.168.169.136:4560</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>-->
+
+    <appender name="ErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <fileNamePattern>${LOG_HOME}/task/error/error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <!--保存的时间（天数）-->
+            <maxHistory>7</maxHistory>
+            <!--日志文件的总大小-->
+            <totalSizeCap>10GB</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="InfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--路径-->
+            <fileNamePattern>${LOG_HOME}/task/info/info.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <!--保存的时间（天数）-->
+            <maxHistory>365</maxHistory>
+            <!--日志文件的总大小-->
+            <totalSizeCap>10GB</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <root>
+        <appender-ref ref="InfoLog"/>
+        <appender-ref ref="ErrorLog"/>
+    </root>
+    <logger name="com.hc.calc.task.expression" level="INFO" additivity="true">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="InfoLog"/>
+        <!--<appender-ref ref="LOGSTASH"/>-->
+    </logger>
+</configuration>
+        <!--
+        <configuration>
+            <include resource="org/springframework/boot/logging/logback/base.xml"/>
+        
+            <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>192.168.169.135:4560</destination>
+                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder"/>
+            </appender>
+        
+            <root level="INFO">
+                <appender-ref ref="LOGSTASH"/>
+                <appender-ref ref="CONSOLE"/>
+            </root>
+        </configuration>-->

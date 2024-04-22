@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:       #必选，元数据
+  name: calc-task-dev    #必选，Pod名称
+spec:
+  selector:
+    matchLabels:
+      app: calc-task-dev
+  template:
+    metadata:
+      labels:
+        app: calc-task-dev
+    spec:
+      imagePullSecrets:
+        - name: harbor-secret
+      containers:
+        - name: calc-task-dev
+          imagePullPolicy: Always
+          image: 192.168.2.53/test/calc-task
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+#          image: 192.168.2.242:9021/test/uaa
+          volumeMounts:
+            - mountPath: /config
+              name: starter-config
+          volumeDevices:
+            - devicePath: /test/cal-task/config
+              name: starter-config
+          ports:
+            - containerPort: 8080
+          env:
+            - name: JAVA_OPTS
+              value: -Dspring.profiles.active=k8s
+---

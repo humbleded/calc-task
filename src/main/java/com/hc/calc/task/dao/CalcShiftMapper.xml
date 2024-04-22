@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hc.calc.task.dao.CalcShiftMapper">
+
+    <resultMap id="calcShift" type="com.hc.calc.task.model.CalcShift">
+        <result column="dataDT" property="dataDT"/>
+        <result column="mpointid" property="mpointId"/>
+        <result column="shiftstype" property="shiftsType"/>
+        <result column="shift" property="shift"/>
+        <result column="startDT" property="startDT"/>
+        <result column="endDT" property="endDT"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.hc.calc.task.model.CalcShift">
+        INSERT t_calc_shift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="dataDT != null">
+            dataDT,
+        </if>
+        <if test="mpointId != null">
+            mpointid,
+        </if>
+        <if test="shiftsType != null">
+            shiftstype,
+        </if>
+        <if test="shift != null">
+            shift,
+        </if>
+        <if test="startDT != null">
+            startDT,
+        </if>
+        <if test="endDT != null">
+            endDT,
+        </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dataDT != null">
+                #{dataDT,jdbcType=TIMESTAMP},
+            </if>
+            <if test="mpointId != null">
+                #{mpointId,jdbcType=BIGINT},
+            </if>
+            <if test="shiftsType != null">
+                #{shiftsType,jdbcType=VARCHAR},
+            </if>
+            <if test="shift != null">
+                #{shift,jdbcType=VARCHAR},
+            </if>
+            <if test="startDT != null">
+                #{startDT,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endDT != null">
+                #{endDT,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteOldLog" >
+      DELETE FROM t_calc_shift WHERE mpointId =#{mpoint} and dataDT =#{dataDT}
+    </delete>
+</mapper>

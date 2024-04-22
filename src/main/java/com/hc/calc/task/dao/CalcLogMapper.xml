@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hc.calc.task.dao.CalcLogMapper">
+    <resultMap id="BaseResultMap" type="com.hc.calc.task.model.CalcLog">
+        <result column="taskid" jdbcType="BIGINT" property="taskid"/>
+        <result column="dataDT" jdbcType="TIMESTAMP" property="datadt"/>
+        <result column="finishDT" jdbcType="TIMESTAMP" property="finishdt"/>
+        <result column="excute_val" jdbcType="DECIMAL" property="excuteVal"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="error" jdbcType="VARCHAR" property="error"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.hc.calc.task.model.CalcLog">
+    insert into t_calc_log (taskid, dataDT, finishDT,
+      excute_val, status, error
+      )
+    values (#{taskid,jdbcType=BIGINT}, #{datadt,jdbcType=TIMESTAMP}, #{finishdt,jdbcType=TIMESTAMP},
+      #{excuteVal,jdbcType=DECIMAL}, #{status,jdbcType=VARCHAR}, #{error,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.hc.calc.task.model.CalcLog">
+        insert into t_calc_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskid != null">
+                taskid,
+            </if>
+            <if test="datadt != null">
+                dataDT,
+            </if>
+            <if test="finishdt != null">
+                finishDT,
+            </if>
+            <if test="excuteVal != null">
+                excute_val,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="error != null">
+                error,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskid != null">
+                #{taskid,jdbcType=BIGINT},
+            </if>
+            <if test="datadt != null">
+                #{datadt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="finishdt != null">
+                #{finishdt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="excuteVal != null">
+                #{excuteVal,jdbcType=DECIMAL},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="error != null">
+                #{error,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <insert id="saveLog" parameterType="com.hc.calc.task.model.CalcLog">
+        INSERT INTO t_calc_log
+		(taskid, dataDT, finishDT,
+      excute_val, status, error)
+		VALUES
+			(#{taskid,jdbcType=BIGINT},
+                #{datadt,jdbcType=TIMESTAMP},
+                #{finishdt,jdbcType=TIMESTAMP},
+                #{excuteVal,jdbcType=DECIMAL},
+                #{status,jdbcType=VARCHAR},
+                #{error,jdbcType=VARCHAR})
+		ON DUPLICATE KEY UPDATE
+        finishDT=VALUES(finishdt),excute_val=VALUES(excute_val),status=VALUES(status),error=VALUES(error)
+    </insert>
+    <update id="updateRoll" parameterType="com.hc.calc.task.model.CalcRoll">
+        update t_calc_rollback set 
+        <if test="excuteVal != null">
+         excute_val = #{excuteVal,jdbcType=DECIMAL},
+        </if>
+        <if test="error != null">
+         error = #{error,jdbcType=VARCHAR},
+        </if>
+        <if test="status != null">
+         status = #{status,jdbcType=VARCHAR},
+        </if>
+        finishDT = now()
+        where taskid = #{taskid,jdbcType=BIGINT} and dataDT = #{datadt,jdbcType=TIMESTAMP}
+    </update>
+
+    <delete id="deleteOldLog">
+        DELETE FROM t_calc_log WHERE taskid = #{taskid,jdbcType=BIGINT} and dataDT = #{datadt,jdbcType=TIMESTAMP}
+    </delete>
+
+    <select id="selectByTaskId" resultMap="BaseResultMap">
+        select * from t_calc_log WHERE taskid = #{taskid,jdbcType=BIGINT} and dataDT = #{startDT,jdbcType=TIMESTAMP}
+    </select>
+</mapper>
